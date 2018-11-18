@@ -25,15 +25,13 @@ func main() {
 			continue
 		}
 
-		//log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
 		var response string
 
 		switch update.Message.Text {
 		case "/start":
 			response = "Hello!"
 		default:
-			response = "Not hello bitch!"
+			response = "Not hello bitch " + update.Message.From.UserName + " !"
 		}
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID,response)
