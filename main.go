@@ -1,12 +1,41 @@
 package main
 
 import (
-	"log"
+	"./Database"
+	"MyFirstBot/Configs"
+	_ "fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
+	"strconv"
+)
+
+var numericKeyboard = tgbotapi.NewReplyKeyboard(
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("1"),
+		tgbotapi.NewKeyboardButton("2"),
+		tgbotapi.NewKeyboardButton("3"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("4"),
+		tgbotapi.NewKeyboardButton("5"),
+		tgbotapi.NewKeyboardButton("6"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("7"),
+		tgbotapi.NewKeyboardButton("8"),
+		tgbotapi.NewKeyboardButton("9"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("+"),
+		tgbotapi.NewKeyboardButton("-"),
+		tgbotapi.NewKeyboardButton("x"),
+		tgbotapi.NewKeyboardButton("="),
+	),
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI(token)
+
+	bot, err := tgbotapi.NewBotAPI(Configs.Token)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -26,15 +55,25 @@ func main() {
 		}
 
 		var response string
-
-		switch update.Message.Text {
-		case "/start":
-			response = "Hello!"
-		default:
-			response = "Not hello bitch " + update.Message.From.UserName + " !"
+		if update.Message.Text == "/start"{
+           Database.AddUser ( update.Message.From.FirstName, update.Message.From.LastName, strconv.Itoa(update.Message.From.ID), update.Message.From.UserName)
+           response = " User successfully appended to database"
 		}
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID,response)
+		if update.Message.Text == "/firstname" {
+			response = update.Message.From.FirstName
+
+		} else if update.Message.Text == "/lastname" {
+			response = update.Message.From.LastName
+		} else if update.Message.Text == "/nick" {
+			response = (update.Message.From.FirstName) + " " + (update.Message.From.LastName)
+		} /*else if update.Message.Text == "/showme"{
+			Database.ShowUser(update.Message.From.ID)
+		}*/
+
+
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
+		msg.ReplyMarkup = numericKeyboard
 
 		bot.Send(msg)
 	}

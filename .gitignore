@@ -1,0 +1,7 @@
+*.idea
+Configs.go
+Configs
+*.iml
+*.venv
+*.env
+*.db
