@@ -8,7 +8,14 @@ import (
 	"log"
 	"strconv"
 )
-
+var normalKeyboard= tgbotapi.NewReplyKeyboard(
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("/start"),
+		tgbotapi.NewKeyboardButton("/nick"),
+		tgbotapi.NewKeyboardButton("/firstname"),
+		tgbotapi.NewKeyboardButton("/lastname"),
+	),
+)
 var numericKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("1"),
@@ -55,25 +62,29 @@ func main() {
 		}
 
 		var response string
-		if update.Message.Text == "/start"{
-           Database.AddUser ( update.Message.From.FirstName, update.Message.From.LastName, strconv.Itoa(update.Message.From.ID), update.Message.From.UserName)
-           response = " User successfully appended to database"
-		}
 
-		if update.Message.Text == "/firstname" {
-			response = update.Message.From.FirstName
+		switch update.Message.Text {
 
-		} else if update.Message.Text == "/lastname" {
-			response = update.Message.From.LastName
-		} else if update.Message.Text == "/nick" {
+		case "/start":
+			Database.AddUser(update.Message.From.FirstName, update.Message.From.LastName, strconv.Itoa(update.Message.From.ID), update.Message.From.UserName)
+			response = " User successfully appended to database"
+		case "/nick":
 			response = (update.Message.From.FirstName) + " " + (update.Message.From.LastName)
-		} /*else if update.Message.Text == "/showme"{
-			Database.ShowUser(update.Message.From.ID)
-		}*/
+		case "/firstname":
+			response = update.Message.From.FirstName
+		case "/lastname":
+			response = update.Message.From.LastName
+			/*case "/myphotos":
+			response =  tgbotapi.GetUserProfilePhotos
+			default:
+			response = "Wrong command.Please, try again."
 
-
+			else if update.Message.Text =="/eth" {
+			jsoBinanceQuery.Binance()п
+			}*/
+		}
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
-		msg.ReplyMarkup = numericKeyboard
+		msg.ReplyMarkup = normalKeyboard
 
 		bot.Send(msg)
 	}
